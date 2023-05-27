@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>freelancer</title>
+    <style>
+   
+        body {
+          font-family: Arial, sans-serif;
+          margin: 0;
+          padding: 0;
+        }
+    
+        .container {
+          max-width: 800px;
+          margin: 20px auto;
+          padding: 20px;
+        }
+    
+        .card {
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          padding: 10px;
+          margin-bottom: 10px;
+        }
+    
+        .card img {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 50%;
+        }
+    
+        .pagination {
+          margin-top: 20px;
+          display: flex;
+          justify-content: center;
+        }
+    
+        .pagination button {
+          margin: 0 5px;
+          padding: 5px 10px;
+          border: none;
+          background-color: #f3f3f3;
+          cursor: pointer;
+        }
+    
+        .pagination button.active {
+          background-color: #3498db;
+          color: white;
+        }
+      </style>
+    
+</head>
+<body>
+<h1>freeancer</h1>
+<h4>Sort Based On Price</h4>
+<button id="sort-low-to-high" class="u-full-width button button-primary">
+  Sort Low To High
+</button>
+<button id="sort-high-to-low" class="u-full-width button button-primary">
+  Sort High To Low
+</button>
+<hr />
+<div class="container" id="freelancerCont"></div>
+<div class="page" id="pageCont"></div>
+
+<script>
+    let sortAtoZBtn = document.getElementById("sort-low-to-high");
+let sortZtoABtn = document.getElementById("sort-high-to-low");
+    let token=localStorage.getItem("token")
+    let freelancContainer=document.getElementById("freelancerCont");
+    let pageContainer=document.getElementById("pageCont")
+    let data
+    let url="https://frelancer.onrender.com/users"
+    if(token){
+        fetch("https://frelancer.onrender.com/users")
+        .then(function(response){
+            if(response.ok){
+                return response.json();
+            }else{
+                throw new Error("failed")
+            }
+        })
+        .then(function(data){
+            console.log(data)
+            displayData(data)
+            displayPage(total_pages)
+        })
+        .catch(function(error){
+            console.log(error)
+        });
+    }else{
+        window.location.href="login.html"
+    }
+
+    function displayData(data){
+        console.log(data)
+        freelancContainer.innerHTML=null;
+        data.forEach(function(el){
+            let card=document.createElement("div")
+            card.classList.add("card")
+
+            let pic=document.createElement("img")
+            pic.src=el.image;
+            card.appendChild(pic)
+
+            let name=document.createElement("h3")
+            name.innerText=el.name
+            card.appendChild(name)
+
+            let email=document.createElement("p")
+            email.innerText=el.email
+            card.appendChild(email)
+
+            let profession=document.createElement("p")
+            profession.innerText=el.profession
+            card.appendChild(profession)
+
+            let skills=document.createElement("p")
+            skills.innerText=el.skills.join(",")
+            card.appendChild(skills)
+
+            let hourlyrate=document.createElement("hp")
+            hourlyrate.innerText=el.hourly_rate
+            card.appendChild(hourlyrate)
+
+            let bookingStatus=document.createElement("p")
+            bookingStatus.innerText=el.isBooked
+            card.appendChild(bookingStatus)
+
+            let edit =document.createElement("button")
+            edit.innerText="edit"
+            card.appendChild(edit)
+            let hire =document.createElement("button")
+            hire.innerText="hire"
+            card.appendChild(hire)
+            let Delet =document.createElement("button")
+            Delet.innerText="delete"
+            card.appendChild(Delet)
+
+
+  
+        Delet.addEventListener("click",()=>{
+       fetch(url+`/${el.id}`, {
+         method: "DELETE",
+         header: {
+           "Content-Type": "application/json",
+         },
+       })
+         .then((res) => res.json())
+         .then((res) => {
+           console.log(res);
+           getdata()
+         }).catch((err)=>{console.log(err)});
+    })
+
+            freelancContainer.appendChild(card)
+
+        })
+    }
+
+
+
+sortAtoZBtn.addEventListener("click", () => {
+  let newdata = data.sort((a, b) => {
+  if(a.hourly_rate> b.hourly_rate) return 1;
+  if(a.hourly_rate < b.hourly_rate) return -1;
+  return 0;
+  })
+  displayData(newdata)
+})
+
+sortZtoABtn.addEventListener("click", () => {
+    data.sort((a, b) => {
+    if(a.hourly_rate < b.hourly_rate) return 1;
+    if(a.hourly_rate > b.hourly_rate) return -1;
+    return 0;
+  })
+  displayData(newdata)
+})
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

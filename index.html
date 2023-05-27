@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>home page</title>
+  <style>
+  
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #a1eed0;
+      overflow: hidden;
+    }
+
+    nav a {
+      float: left;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    nav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#admin">Admin</a>
+    <a href="#user">User</a>
+  </nav>
+
+  <div id="admin">
+    
+    <h2>Admin Section</h2>
+    <nav>
+        <a href="./login.html">LOGIN</a>
+        <a href="./reports.html">REPORTS</a>
+        <a href="./freelancer.html">FREELANCER</a>
+    </nav>
+    
+  </div>
+
+  <div id="user">
+  
+    <h2>User Section</h2>
+    <form id="registration">
+        <input type="text" id="name" name="name" placeholder="name" required>
+        <input type="text" id="image" name="image" placeholder="image" required>
+        <input type="text" id="email" name="email" placeholder="email" required>
+        <input type="text" id="password" name="password" placeholder="password" required>
+        <select name="profession" id="profession" >
+            <option value="">Select profession</option>
+            <option value="student">student</option>
+            <option value="Web Developer">Web Developer</option>
+            <option value="Graphic Designer">Graphic Designer</option>
+        </select>
+        <input type="text" id="skills" name="skills" placeholder="skills" required>
+        <input type="number" id="hourlyrate" name="hourlyrate" placeholder="hourlyrate" required>
+        <button type="submit"> register</button>
+
+    </form>
+  
+   
+  </div>
+
+  <script>
+   
+    var adminButton = document.querySelector('a[href="#admin"]');
+    var userButton = document.querySelector('a[href="#user"]');
+    var adminSection = document.getElementById('admin');
+    var userSection = document.getElementById('user');
+
+    
+    adminButton.addEventListener('click', function() {
+      adminSection.style.display = 'block';
+      userSection.style.display = 'none';
+    });
+
+    
+    userButton.addEventListener('click', function() {
+      adminSection.style.display = 'none';
+      userSection.style.display = 'block';
+    });
+
+    //registraion code
+    var regform=document.getElementById("registration")
+    regform.addEventListener("submit",function(event){
+        event.preventDefault()
+        let formdata=new FormData(regform)
+
+        let freelancerData={}
+
+        formdata.forEach(function(value,key){
+            freelancerData[key]=value;
+        });
+
+        console.log()
+
+        fetch("http://localhost:3000/users",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(freelancerData)
+        })
+        .then(function(response){
+            if(response.ok){
+                alert("successfully registerd")
+                form.reset();
+            }else{
+                throw new Error("regisrtation failed")
+            }
+        })
+        .catch(function(error){
+            console.error(error);
+        })
+    })
+  </script>
+</body>
+</html>
